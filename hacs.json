@@ -1,6 +1,7 @@
 {
-  "name": "Lithuanian Date Card",
-  "render_readme": true,
-  "filename": "lithuanian-date-card.js",
-  "content_in_root": false
+    "name": "Lietuviškas Kalendorius",
+    "content_in_root": true,
+    "filename": "ha-lithuanian-date-card.js",
+    "render_readme": true,
+    "hide_default_branch": true
 }
