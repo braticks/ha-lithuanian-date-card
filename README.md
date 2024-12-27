@@ -48,7 +48,11 @@ Pridėkite kortelę į savo skydelį (dashboard):
 - Raudonos dienos indikatorius
 - Zodiako ženklas
 
+## Ekrano Nuotraukos
 
+![Lietuviško Kalendoriaus Kortelė - Tamsi tema](https://github.com/braticks/ha-lithuanian-date-card/blob/main/images/Ekrano%20nuotrauka%202024-12-25%20113257.png?raw=true)
+
+![Lietuviško Kalendoriaus Kortelė - Šviesi tema](https://github.com/braticks/ha-lithuanian-date-card/blob/main/images/Ekrano%20nuotrauka%202024-12-25%20113335.png?raw=true)
 
 ## Pagalba Tobulinimui
 
