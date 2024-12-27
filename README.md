@@ -26,8 +26,10 @@ Prieš įdiegiant šią kortelę, būtina turėti įdiegtą [Day.lt integraciją
 ## Naudojimas
 
 Pridėkite kortelę į savo skydelį (dashboard):
-  type: custom:custom-date-card
-  entity: sensor.daylt_info
+```yaml
+type: 'custom:ha-lithuanian-date-card'
+entity: sensor.daylt_info
+```
 
 
 
