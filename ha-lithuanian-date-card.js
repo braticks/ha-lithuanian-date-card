@@ -1,4 +1,22 @@
 class LithuanianDateCard extends HTMLElement {
+  // Zodiako ženklų ikonų žodynas
+  static get ZODIAC_ICONS() {
+    return {
+      'Avinas': 'mdi:zodiac-aries',
+      'Tauras': 'mdi:zodiac-taurus',
+      'Dvyniai': 'mdi:zodiac-gemini',
+      'Vėžys': 'mdi:zodiac-cancer',
+      'Liūtas': 'mdi:zodiac-leo',
+      'Mergelė': 'mdi:zodiac-virgo',
+      'Svarstyklės': 'mdi:zodiac-libra',
+      'Skorpionas': 'mdi:zodiac-scorpio',
+      'Šaulys': 'mdi:zodiac-sagittarius',
+      'Ožiaragis': 'mdi:zodiac-capricorn',
+      'Vandenis': 'mdi:zodiac-aquarius',
+      'Žuvys': 'mdi:zodiac-pisces'
+    };
+  }
+
   set hass(hass) {
     if (!this.content) {
       this.innerHTML = `
@@ -18,17 +36,18 @@ class LithuanianDateCard extends HTMLElement {
               flex-direction: column;
               gap: 8px;
             }
-            
-            .sun-moon-info {
+
+            .moon-container {
               display: flex;
-              justify-content: space-between;
+              justify-content: flex-end;
               align-items: center;
               margin-bottom: 8px;
               color: rgba(255, 255, 255, 0.8);
               font-size: 14px;
+              padding: 0 8px;
             }
-            
-            .zodiac-info, .moon-info {
+
+            .moon-info {
               display: flex;
               align-items: center;
               gap: 8px;
@@ -123,18 +142,37 @@ class LithuanianDateCard extends HTMLElement {
               color: rgba(255, 255, 255, 0.8);
               font-size: 13px;
             }
+
+            .footer-info {
+              display: grid;
+              grid-template-columns: repeat(2, 1fr);
+              gap: 8px;
+              margin-top: 16px;
+              padding-top: 16px;
+              border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .zodiac-info, .chinese-zodiac {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 4px;
+              text-align: center;
+              font-size: 13px;
+              color: rgba(255, 255, 255, 0.8);
+            }
+
+            .moon-phase {
+              white-space: nowrap;
+            }
             
             ha-icon {
-              --mdc-icon-size: 20px;
+              --mdc-icon-size: 24px;
               color: rgba(255, 255, 255, 0.8);
             }
           </style>
           <div class="date-time-card">
-            <div class="sun-moon-info">
-              <div class="zodiac-info">
-                <ha-icon icon="mdi:zodiac-sagittarius"></ha-icon>
-                <span class="zodiac-sign">Šaulys</span>
-              </div>
+            <div class="moon-container">
               <div class="moon-info">
                 <ha-icon icon="mdi:moon-full"></ha-icon>
                 <span class="moon-phase"></span>
@@ -167,12 +205,22 @@ class LithuanianDateCard extends HTMLElement {
             <div class="names"></div>
             <div class="holidays"></div>
             <div class="proverb"></div>
+
+            <div class="footer-info">
+              <div class="zodiac-info">
+                <ha-icon icon="mdi:zodiac-capricorn"></ha-icon>
+                <span class="zodiac-sign"></span>
+              </div>
+              <div class="chinese-zodiac">
+                <ha-icon icon="mdi:dragon"></ha-icon>
+                <span class="chinese-zodiac-sign"></span>
+              </div>
+            </div>
           </div>
         </ha-card>
       `;
       this.content = true;
     }
-
     const entityId = this.config.entity || 'sensor.daylt_info';
     const state = hass.states[entityId];
 
@@ -193,9 +241,56 @@ class LithuanianDateCard extends HTMLElement {
         monthName = months[date.getMonth()];
       }
       
-      // Update zodiac sign
+      // Update zodiac sign and icon
       const zodiacSign = this.querySelector('.zodiac-sign');
-      zodiacSign.textContent = attributes.zodiac_sign || 'Šaulys';
+      const zodiacIcon = this.querySelector('.zodiac-info ha-icon');
+      const currentZodiac = attributes.zodiakas || 'Ožiaragis';
+      zodiacSign.textContent = currentZodiac;
+      zodiacIcon.setAttribute('icon', LithuanianDateCard.ZODIAC_ICONS[currentZodiac] || 'mdi:zodiac-capricorn');
+
+      // Update Chinese zodiac
+      const chineseZodiacSign = this.querySelector('.chinese-zodiac-sign');
+      const chineseZodiacIcon = this.querySelector('.chinese-zodiac ha-icon');
+      const currentChineseZodiac = attributes.kinu_zodiakas || 'Drakonas';
+      chineseZodiacSign.textContent = currentChineseZodiac;
+      
+      // Set Chinese zodiac icon based on the sign
+      let chineseZodiacIconName = 'mdi:dragon';
+      switch(currentChineseZodiac.toLowerCase()) {
+        case 'žiurkė': chineseZodiacIconName = 'mdi:rat'; break;
+        case 'jautis': chineseZodiacIconName = 'mdi:cow'; break;
+        case 'tigras': chineseZodiacIconName = 'mdi:tiger'; break;
+        case 'triušis': 
+        case 'kiškis': chineseZodiacIconName = 'mdi:rabbit'; break;
+        case 'drakonas': chineseZodiacIconName = 'mdi:dragon'; break;
+        case 'gyvatė': chineseZodiacIconName = 'mdi:snake'; break;
+        case 'arklys': chineseZodiacIconName = 'mdi:horse'; break;
+        case 'ožka': chineseZodiacIconName = 'mdi:goat'; break;
+        case 'beždžionė': chineseZodiacIconName = 'mdi:monkey'; break;
+        case 'gaidys': chineseZodiacIconName = 'mdi:rooster'; break;
+        case 'šuo': chineseZodiacIconName = 'mdi:dog'; break;
+        case 'kiaulė': chineseZodiacIconName = 'mdi:pig'; break;
+      }
+      chineseZodiacIcon.setAttribute('icon', chineseZodiacIconName);
+
+      // Update moon phase icon and text
+      const moonIcon = this.querySelector('.moon-info ha-icon');
+      const moonPhase = attributes.menulio_faze?.toLowerCase() || '';
+      const moonPhaseText = this.querySelector('.moon-phase');
+      let moonIconName = 'mdi:moon-full';
+
+      if (moonPhase.includes('jaunatis')) {
+        moonIconName = 'mdi:moon-new';
+      } else if (moonPhase.includes('priešpilnis')) {
+        moonIconName = 'mdi:moon-waxing-gibbous';
+      } else if (moonPhase.includes('pilnatis')) {
+        moonIconName = 'mdi:moon-full';
+      } else if (moonPhase.includes('delčia')) {
+        moonIconName = 'mdi:moon-waning-gibbous';
+      }
+
+      moonIcon.setAttribute('icon', moonIconName);
+      moonPhaseText.textContent = `${attributes.menulio_faze}\n${attributes.menulio_diena}`;
 
       // Update day number with red day check
       const dayNumber = this.querySelector('.day-number');
@@ -222,7 +317,6 @@ class LithuanianDateCard extends HTMLElement {
       this.querySelector('.daylength').textContent = attributes.dienos_ilgumas;
       this.querySelector('.names').textContent = attributes.vardadieniai;
       this.querySelector('.proverb').textContent = attributes.patarle;
-      this.querySelector('.moon-phase').textContent = `${attributes.menulio_faze}\n${attributes.menulio_diena}`;
     }
   }
 
