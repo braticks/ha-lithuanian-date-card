@@ -181,7 +181,7 @@ class LithuanianDateCard extends HTMLElement {
 
             <div class="header">
               <div class="month"></div>
-              <div class="year">2024</div>
+              <div class="year">2025</div>
             </div>
             
             <div class="time-info">
