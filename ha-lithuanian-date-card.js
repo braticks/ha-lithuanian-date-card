@@ -181,7 +181,7 @@ class LithuanianDateCard extends HTMLElement {
 
             <div class="header">
               <div class="month"></div>
-              <div class="year">2025</div>
+              <div class="year"></div>
             </div>
             
             <div class="time-info">
@@ -312,6 +312,8 @@ class LithuanianDateCard extends HTMLElement {
       if (monthElem) {
         monthElem.textContent = monthName;
       }
+      const yearElem = this.querySelector('.year');
+      yearElem.textContent = new Date().getFullYear();
       this.querySelector('.sunrise').textContent = attributes.saule_teka;
       this.querySelector('.sunset').textContent = attributes.saule_leidziasi;
       this.querySelector('.daylength').textContent = attributes.dienos_ilgumas;
