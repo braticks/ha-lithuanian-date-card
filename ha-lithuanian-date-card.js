@@ -228,17 +228,24 @@ class LithuanianDateCard extends HTMLElement {
       const attributes = state.attributes;
       const isRedDay = attributes.is_red_day;
       
-      // Get month from sensor.date
+      // Get month from sensor.date; fall back to browser date if unavailable
+      const months = [
+        'Sausis', 'Vasaris', 'Kovas', 'Balandis',
+        'Gegužė', 'Birželis', 'Liepa', 'Rugpjūtis',
+        'Rugsėjis', 'Spalis', 'Lapkritis', 'Gruodis'
+      ];
+
+      let monthName = months[new Date().getMonth()];
       const dateState = hass.states['sensor.date'];
-      let monthName = 'Gruodis'; // default fallback
+
       if (dateState && dateState.state) {
-        const date = new Date(dateState.state);
-        const months = [
-          'Sausis', 'Vasaris', 'Kovas', 'Balandis', 
-          'Gegužė', 'Birželis', 'Liepa', 'Rugpjūtis',
-          'Rugsėjis', 'Spalis', 'Lapkritis', 'Gruodis'
-        ];
-        monthName = months[date.getMonth()];
+        const parts = dateState.state.split('-');
+        if (parts.length === 3) {
+          const monthIndex = Number(parts[1]) - 1;
+          if (monthIndex >= 0 && monthIndex <= 11) {
+            monthName = months[monthIndex];
+          }
+        }
       }
       
       // Update zodiac sign and icon
