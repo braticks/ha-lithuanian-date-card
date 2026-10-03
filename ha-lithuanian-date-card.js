@@ -39,7 +39,7 @@ class LithuanianDateCard extends HTMLElement {
 
             .moon-container {
               display: flex;
-              justify-content: flex-end;
+              justify-content: flex-start;
               align-items: center;
               margin-bottom: 8px;
               color: rgba(255, 255, 255, 0.8);
